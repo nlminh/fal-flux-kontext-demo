@@ -622,9 +622,7 @@ export default function SetupPage() {
               <Card className="bg-card/80 border-border shadow-sm">
                 <CardHeader className="space-y-1 text-center pb-2">
                   <div className="mx-auto h-10 w-10 rounded bg-accent/20 flex items-center justify-center">
-                    <span className="text-lg font-semibold text-accent">
-                      3
-                    </span>
+                    <span className="text-lg font-semibold text-accent">3</span>
                   </div>
                   <CardDescription>
                     {isGenerating
@@ -728,7 +726,7 @@ export default function SetupPage() {
                 </Link>
 
                 <Link
-                  href="https://github.com/fal-ai/flux-kontext-demo"
+                  href="https://github.com/fal-ai-community/fal-flux-kontext-demo"
                   target="_blank"
                   className={buttonVariants()}
                 >
