@@ -214,10 +214,22 @@ export default function SetupPage() {
       setProgressPercent(0);
 
       setTimeout(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: "smooth",
-        });
+        // Find the output section and scroll it to center of viewport
+        const outputSection = document.getElementById('output-section');
+        if (outputSection) {
+          const rect = outputSection.getBoundingClientRect();
+          const absoluteTop = rect.top + window.pageYOffset;
+          const viewportHeight = window.innerHeight;
+          const elementHeight = rect.height;
+          
+          // Calculate position to center the element in viewport
+          const scrollToPosition = absoluteTop - (viewportHeight / 2) + (elementHeight / 2);
+          
+          window.scrollTo({
+            top: Math.max(0, scrollToPosition),
+            behavior: "smooth",
+          });
+        }
       }, 100);
 
       setStreamingProgress("Uploading image...");
@@ -618,7 +630,7 @@ export default function SetupPage() {
           </main>
 
           {(isGenerating || generatedImage || error) && (
-            <div className="mt-12 animate-in slide-in-from-bottom-4 fade-in duration-500">
+            <div id="output-section" className="mt-12 animate-in slide-in-from-bottom-4 fade-in duration-500">
               <Card className="bg-card/80 border-border shadow-sm">
                 <CardHeader className="space-y-1 text-center pb-2">
                   <div className="mx-auto h-10 w-10 rounded bg-accent/20 flex items-center justify-center">
@@ -716,11 +728,11 @@ export default function SetupPage() {
                 </Link>
               </div>
 
-              <div className="flex flex-row items-center justify-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link
                   href="https://fal.ai/docs"
                   target="_blank"
-                  className={buttonVariants({ variant: "secondary" })}
+                  className={buttonVariants({ variant: "secondary", size: "sm" })}
                 >
                   Build Your Own AI App
                 </Link>
@@ -728,11 +740,11 @@ export default function SetupPage() {
                 <Link
                   href="https://github.com/fal-ai-community/fal-flux-kontext-demo"
                   target="_blank"
-                  className={buttonVariants()}
+                  className={buttonVariants({ size: "sm" })}
                 >
                   <svg
                     className="w-5 h-5 mr-2"
-                    fill="currentColor"
+                    fill="#000000"
                     viewBox="0 0 20 20"
                   >
                     <path
