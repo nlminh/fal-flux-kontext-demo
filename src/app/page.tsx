@@ -108,6 +108,13 @@ export default function SetupPage() {
   );
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const dragCounter = useRef(0);
+  
+  // Locked generation parameters - set when generation starts
+  const [lockedGenerationParams, setLockedGenerationParams] = useState<{
+    imageUrl: string;
+    prompt: string;
+    loraUrl?: string;
+  } | null>(null);
 
   const trpc = useTRPC();
 
@@ -118,26 +125,12 @@ export default function SetupPage() {
   // Setup the subscription for image generation streaming
   const subscription = useSubscription(
     trpc.generateImageStream.subscriptionOptions(
-      {
-        imageUrl: uploadedImageUrl || "",
-        prompt:
-          selectedStyle === "custom"
-            ? customPrompt
-            : styleModels.find((m) => m.id === selectedStyle)?.prompt || "",
-        ...(() => {
-          const loraUrl =
-            selectedStyle === "custom"
-              ? customLoRAUrl
-              : styleModels.find((m) => m.id === selectedStyle)?.loraUrl;
-          return loraUrl ? { loraUrl } : {};
-        })(),
+      lockedGenerationParams || {
+        imageUrl: "",
+        prompt: "",
       },
       {
-        enabled:
-          isGenerating &&
-          !!uploadedImageUrl &&
-          !!selectedStyle &&
-          (selectedStyle !== "custom" || !!customPrompt),
+        enabled: isGenerating && !!lockedGenerationParams,
         onData: (data: any) => {
           const eventData = data.data;
 
@@ -159,12 +152,14 @@ export default function SetupPage() {
             setIsGenerating(false);
             setStreamingProgress(null);
             setProgressPercent(0);
+            setLockedGenerationParams(null);
           } else if (eventData.type === "error") {
             setError(eventData.error);
             setStreamingImage(null);
             setIsGenerating(false);
             setStreamingProgress(null);
             setProgressPercent(0);
+            setLockedGenerationParams(null);
           }
         },
         onError: (error) => {
@@ -176,6 +171,7 @@ export default function SetupPage() {
           setStreamingImage(null);
           setStreamingProgress(null);
           setProgressPercent(0);
+          setLockedGenerationParams(null);
         },
       },
     ),
@@ -240,6 +236,21 @@ export default function SetupPage() {
         });
 
         setUploadedImageUrl(uploadResult.url);
+        
+        // Lock in the generation parameters at the time of clicking Generate
+        const prompt = isCustom 
+          ? customPrompt 
+          : selectedModel?.prompt || "";
+        const loraUrl = isCustom 
+          ? customLoRAUrl 
+          : selectedModel?.loraUrl;
+        
+        setLockedGenerationParams({
+          imageUrl: uploadResult.url,
+          prompt,
+          ...(loraUrl ? { loraUrl } : {}),
+        });
+        
         setStreamingProgress("Starting generation...");
       } catch (uploadError) {
         console.error("Upload error:", uploadError);
@@ -251,6 +262,7 @@ export default function SetupPage() {
         setIsGenerating(false);
         setStreamingImage(null);
         setStreamingProgress(null);
+        setLockedGenerationParams(null);
       }
     }
   };
@@ -314,6 +326,7 @@ export default function SetupPage() {
       setShowCustomLoRA(false);
       setCustomLoRAUrl("");
       setCustomPrompt("");
+      setLockedGenerationParams(null);
       // Scroll back to top
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -648,7 +661,10 @@ export default function SetupPage() {
                       <AlertCircle className="mx-auto h-12 w-12 text-destructive mb-4" />
                       <p className="text-destructive font-medium">{error}</p>
                       <Button
-                        onClick={() => setError(null)}
+                        onClick={() => {
+                          setError(null);
+                          setLockedGenerationParams(null);
+                        }}
                         variant="secondary"
                         className="mt-4"
                       >
