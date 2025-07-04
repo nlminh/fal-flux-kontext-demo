@@ -2,6 +2,7 @@ import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { type NextRequest } from "next/server";
 import { createContext } from "@/server/trpc/context";
 import { appRouter } from "@/server/trpc/routers/_app";
+import { checkBotId } from 'botid/server';
 
 const handler = (req: NextRequest) =>
   fetchRequestHandler({
@@ -19,4 +20,15 @@ const handler = (req: NextRequest) =>
         : undefined,
   });
 
-export { handler as GET, handler as POST };
+const protectedHandler = async (req: NextRequest) => {
+  // Only check for bots on POST requests (mutations)
+  if (req.method === 'POST') {
+    const verification = await checkBotId();
+    if (verification.isBot) {
+      return new Response('Access denied', { status: 403 });
+    }
+  }
+  return handler(req);
+};
+
+export { handler as GET, protectedHandler as POST };

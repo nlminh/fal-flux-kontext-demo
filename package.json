@@ -53,6 +53,7 @@
     "@vercel/kv": "^3.0.0",
     "@vercel/speed-insights": "^1.2.0",
     "bcryptjs": "^3.0.2",
+    "botid": "^1.4.1",
     "bun": "^1.2.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

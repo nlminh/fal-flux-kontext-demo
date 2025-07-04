@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { CoreProviders } from "./core-providers";
 import { focal, hal, halMono, commitMono, inconsolata } from "@/lib/fonts";
+import { BotIdClient } from 'botid/client';
 
 export const metadata: Metadata = {
   title: {
@@ -98,6 +99,16 @@ export default function RootLayout({
     >
       <head>
         <meta name="color-scheme" content="dark" />
+        <BotIdClient protect={[
+          {
+            path: '/api/fal',
+            method: 'POST',
+          },
+          {
+            path: '/api/trpc/*',
+            method: 'POST',
+          },
+        ]} />
       </head>
       <body className={`font-sans bg-background text-foreground min-h-screen`}>
         <CoreProviders>{children}</CoreProviders>

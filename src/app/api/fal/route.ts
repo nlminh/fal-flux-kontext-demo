@@ -5,6 +5,7 @@ import {
   RateLimiter,
   shouldLimitRequest,
 } from "@/lib/ratelimit";
+import { checkBotId } from 'botid/server';
 
 const limiter: RateLimiter = {
   perMinute: createRateLimiter(10, "60 s"),
@@ -13,6 +14,12 @@ const limiter: RateLimiter = {
 };
 
 export const POST = async (req: NextRequest) => {
+  // Check for bot activity first
+  const verification = await checkBotId();
+  if (verification.isBot) {
+    return new Response('Access denied', { status: 403 });
+  }
+
   const ip = req.headers.get("x-forwarded-for") || "";
   const limiterResult = await shouldLimitRequest(limiter, ip);
   if (limiterResult.shouldLimitRequest) {

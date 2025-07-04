@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+import { withBotId } from 'botid/next/config';
 
 const nextConfig = {
   devIndicators: false,
@@ -8,4 +9,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBotId(nextConfig);
