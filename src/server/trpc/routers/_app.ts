@@ -1,13 +1,12 @@
 import { z } from "zod";
 import { publicProcedure, router } from "../init";
-import { fal } from "@fal-ai/client";
 import { tracked } from "@trpc/server";
+import { createFalClient } from "@fal-ai/client";
 
-if (process.env.FAL_KEY) {
-  fal.config({
-    credentials: process.env.FAL_KEY,
-  });
-}
+const fal = createFalClient({
+  credentials: () => process.env.FAL_KEY as string,
+    proxyUrl: "/api/fal",
+});
 
 export const appRouter = router({
   hello: publicProcedure
@@ -79,7 +78,6 @@ export const appRouter = router({
           if (signal?.aborted) {
             break;
           }
-          console.log("Event:", event);
 
           const eventId = `${generationId}_${eventIndex++}`;
 
