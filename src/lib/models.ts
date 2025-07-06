@@ -112,4 +112,12 @@ export const styleModels: StyleModel[] = [
     imageSrc: "/images/styles/anime.jpg",
     prompt: "convert to anime art style with large eyes and stylized features",
   },
+  {
+    id: "picasso",
+    name: "Picasso Style",
+    imageSrc: "/images/styles/picasso.png",
+    prompt: "convert to Picasso style",
+    loraUrl:
+      "https://huggingface.co/Owen777/Kontext-Style-Loras/resolve/main/Picasso_lora_weights.safetensors",
+  },
 ];
