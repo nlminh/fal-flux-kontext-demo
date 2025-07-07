@@ -253,6 +253,7 @@ h6 {
     transform: rotate(360deg);
   }
 }
+
 .animate-logo-spin {
   animation: logo-spin 2s linear infinite;
 }
