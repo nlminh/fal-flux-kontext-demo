@@ -3,6 +3,8 @@ import "./globals.css";
 import { CoreProviders } from "./core-providers";
 import { focal, hal, halMono, commitMono, inconsolata } from "@/lib/fonts";
 import { BotIdClient } from 'botid/client';
+import { StagewiseToolbar } from '@stagewise/toolbar-next';
+import { ReactPlugin } from '@stagewise-plugins/react';
 
 export const metadata: Metadata = {
   title: {
@@ -112,6 +114,7 @@ export default function RootLayout({
       </head>
       <body className={`font-sans bg-background text-foreground min-h-screen`} suppressHydrationWarning>
         <CoreProviders>{children}</CoreProviders>
+        <StagewiseToolbar config={{ plugins: [ReactPlugin] }} />
       </body>
     </html>
   );
