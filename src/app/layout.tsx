@@ -4,7 +4,7 @@ import { CoreProviders } from "./core-providers";
 import { focal, hal, halMono, commitMono, inconsolata } from "@/lib/fonts";
 import { BotIdClient } from 'botid/client';
 import { StagewiseToolbar } from '@stagewise/toolbar-next';
-import { ReactPlugin } from '@stagewise-plugins/react';
+import ReactPlugin from '@stagewise-plugins/react';
 
 export const metadata: Metadata = {
   title: {
